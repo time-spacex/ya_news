@@ -8,7 +8,7 @@ SECRET_KEY = 'django-insecure-7)dgs++2!#==aye4rd=5)c)bw0eokiyqx0hts6#t80!$c&$s+(
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -17,6 +17,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'news.apps.NewsConfig',
 ]
 
