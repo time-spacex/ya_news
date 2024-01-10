@@ -16,7 +16,7 @@ NEW_FORM_DATA = {'text': 'Новый текст комментария'}
 def test_anonymous_user_cant_create_comment(client, news_id):
     """Тест невозможности комментирования анонимному пользователю."""
     url = reverse('news:detail', args=news_id)
-    client.post(url, datd=FORM_DATA)
+    client.post(url, data=FORM_DATA)
     comments_count = Comment.objects.count()
     assert comments_count == 0
 
