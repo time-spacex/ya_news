@@ -26,7 +26,7 @@ def test_news_count(client, fresh_news):
 
 @pytest.mark.django_db
 def test_news_order(client, fresh_news):
-    """Тест количества новостей на главной странице."""
+    """Тест сортировки новостей на главной странице."""
     object_list = get_response_object(client).context['object_list']
     all_dates = [news.date for news in object_list]
     sorted_dates = sorted(all_dates, reverse=True)
