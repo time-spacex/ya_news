@@ -12,7 +12,6 @@ User = get_user_model()
 
 class TestRoutes(TestCase):
 
-
     @classmethod
     def setUpTestData(cls):
         cls.news = News.objects.create(title='Заголовок', text='Текст')
@@ -23,7 +22,6 @@ class TestRoutes(TestCase):
             author=cls.author,
             text='Текст комментария'
         )
-
 
     def test_pages_availability(self):
         urls = (
@@ -39,7 +37,6 @@ class TestRoutes(TestCase):
                 response = self.client.get(url)
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
-
     def test_availability_for_comment_edit_and_delete(self):
         users_statuses = (
             (self.author, HTTPStatus.OK),
@@ -48,11 +45,10 @@ class TestRoutes(TestCase):
         for user, status in users_statuses:
             self.client.force_login(user)
             for name in ('news:edit', 'news:delete'):
-                with self.subTest(user=user, name=name):        
+                with self.subTest(user=user, name=name):
                     url = reverse(name, args=(self.comment.id,))
                     response = self.client.get(url)
                     self.assertEqual(response.status_code, status)
-
 
     def test_redirect_for_anonymous_client(self):
         login_url = reverse('users:login')

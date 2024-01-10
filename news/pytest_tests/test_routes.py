@@ -5,6 +5,13 @@ from django.urls import reverse
 from http import HTTPStatus
 
 
+def get_response_object(client_type, url_namespace, args):
+    """Универсальная функция получения объекта response."""
+    url = reverse(url_namespace, args=args)
+    response = client_type.get(url)
+    return response
+
+
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     'name, args',
@@ -21,9 +28,7 @@ def test_pages_availability(client, name, args):
     Тест доступности домашней страницы, детализации, логина,
     логаута и регистрации для пользователей.
     """
-    url = reverse(name, args=args)
-    response = client.get(url)
-    assert response.status_code == HTTPStatus.OK
+    assert get_response_object(client, name, args).status_code == HTTPStatus.OK
 
 
 @pytest.mark.parametrize(
@@ -41,9 +46,11 @@ def test_availability_for_comment_edit_and_delete(
     parametrized_client, name, comment_id, expected_status
 ):
     """Тест доступности страниц редактирования и удаления комментария."""
-    url = reverse(name, args=comment_id)
-    response = parametrized_client.get(url)
-    assert response.status_code == expected_status
+    assert get_response_object(
+        parametrized_client,
+        name,
+        comment_id
+    ).status_code == expected_status
 
 
 @pytest.mark.django_db
