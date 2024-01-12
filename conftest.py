@@ -1,17 +1,11 @@
-import random
-
-import pytest
-
 from datetime import datetime, timedelta
+import random
 
 from django.conf import settings
 from django.utils import timezone
+import pytest
 
 from news.models import News, Comment
-
-
-DATETIME_TODAY = datetime.today()
-DATETIME_NOW = timezone.now()
 
 
 @pytest.fixture
@@ -38,25 +32,24 @@ def reader_client(reader, client):
 
 @pytest.fixture
 def news():
-    news = News.objects.create(
+    return News.objects.create(
         title='Заголовок',
         text='Текст новости',
     )
-    return news
 
 
 @pytest.fixture
 def fresh_news():
-    fresh_news = [
-        News(
-            title=f'Новость {index}',
-            text='Просто текст.',
-            date=DATETIME_TODAY - timedelta(days=random.randint(1, 11))
-        )
-        for index in range(settings.NEWS_COUNT_ON_HOME_PAGE + 1)
-    ]
-    News.objects.bulk_create(fresh_news)
-    return fresh_news
+    News.objects.bulk_create(
+        [
+            News(
+                title=f'Новость {index}',
+                text='Просто текст.',
+                date=datetime.today() - timedelta(days=random.randint(1, 11))
+            )
+            for index in range(settings.NEWS_COUNT_ON_HOME_PAGE + 1)
+        ]
+    )
 
 
 @pytest.fixture
@@ -67,14 +60,13 @@ def fresh_comments(news, author):
             author=author,
             text=f'Tекст комментария {index}',
         )
-        fresh_comments.created = DATETIME_NOW - timedelta(days=index)
+        fresh_comments.created = timezone.now() - timedelta(days=index)
         fresh_comments.save()
-    return fresh_comments
 
 
 @pytest.fixture
 def news_id(news):
-    return news.id,
+    return (news.id,)
 
 
 @pytest.fixture
@@ -89,4 +81,4 @@ def comment(news, author):
 
 @pytest.fixture
 def comment_id(comment):
-    return comment.id,
+    return (comment.id,)

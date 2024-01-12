@@ -1,15 +1,8 @@
-import pytest
-
-from django.urls import reverse
-
 from http import HTTPStatus
 
-
-def get_response_object(client_type, url_namespace, args):
-    """Универсальная функция получения объекта response."""
-    url = reverse(url_namespace, args=args)
-    response = client_type.get(url)
-    return response
+from django.urls import reverse
+import pytest
+from pytest_django.asserts import assertRedirects
 
 
 @pytest.mark.django_db
@@ -28,7 +21,7 @@ def test_pages_availability(client, name, args):
     Тест доступности домашней страницы, детализации, логина,
     логаута и регистрации для пользователей.
     """
-    assert get_response_object(client, name, args).status_code == HTTPStatus.OK
+    assert client.get(reverse(name, args=args)).status_code == HTTPStatus.OK
 
 
 @pytest.mark.parametrize(
@@ -46,10 +39,8 @@ def test_availability_for_comment_edit_and_delete(
     parametrized_client, name, comment_id, expected_status
 ):
     """Тест доступности страниц редактирования и удаления комментария."""
-    assert get_response_object(
-        parametrized_client,
-        name,
-        comment_id
+    assert parametrized_client.get(
+        reverse(name, args=comment_id)
     ).status_code == expected_status
 
 
@@ -64,4 +55,4 @@ def test_redirect_for_anonymous_client(client, name, comment_id):
     url = reverse(name, args=comment_id)
     response = client.get(url)
     redirect_url = f'{login_url}?next={url}'
-    assert response.url == redirect_url
+    assertRedirects(response, redirect_url)
