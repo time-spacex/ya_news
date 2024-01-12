@@ -30,7 +30,9 @@ def test_news_order(client, fresh_news):
 def test_comments_order(client, news_id, fresh_comments):
     """Тест сортировки комментариев на странице отдельной новости."""
     news = client.get(reverse('news:detail', args=news_id)).context.get('news')
-    all_comments_dates = [comment.created for comment in news.comment_set.all()]
+    all_comments_dates = [
+        comment.created for comment in news.comment_set.all()
+    ]
     all_comments_dates_sorted = sorted(all_comments_dates)
     assert all_comments_dates == all_comments_dates_sorted
 
@@ -38,7 +40,9 @@ def test_comments_order(client, news_id, fresh_comments):
 @pytest.mark.django_db
 def test_anonymous_client_has_no_form(client, news_id):
     """Тест недоступности формы комментария для анонимного пользователя."""
-    assert 'form' not in client.get(reverse('news:detail', args=news_id)).context
+    assert 'form' not in client.get(
+        reverse('news:detail', args=news_id)
+    ).context
 
 
 @pytest.mark.django_db
@@ -46,4 +50,4 @@ def test_authorized_client_has_form(author_client, news_id):
     """Тест доступности формы комментария для авторизованного пользователя."""
     response = author_client.get(reverse('news:detail', args=news_id))
     assert 'form' in response.context
-    assert isinstance(response.context['form'], CommentForm) == True
+    assert isinstance(response.context['form'], CommentForm) is True
